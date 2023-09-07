@@ -1,0 +1,17 @@
+{
+  "name": "noode_test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./src/app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node ./src/app.js",
+    "prisma:postgres": "npx prisma migrate deploy --schema=./schemas/postgresql.prisma && npx prisma generate --schema=./schemas/postgresql.prisma"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "grammy": "^1.18.1",
+    "prisma": "^5.2.0"
+  }
+}
