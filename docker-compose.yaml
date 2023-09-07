@@ -4,5 +4,5 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockefile
+      dockerfile: Dockerfile
     restart: always

@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^5.2.0",
     "grammy": "^1.18.1",
     "prisma": "^5.2.0"
   }
