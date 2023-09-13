@@ -1,1 +1,1 @@
-export * from './Keyboard.js';
+export * from './keyboards.js';

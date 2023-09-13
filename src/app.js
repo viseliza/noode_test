@@ -1,11 +1,12 @@
-import 'dotenv/config'
+import dotenv from 'dotenv'
 import { Bot } from 'grammy';
-import { Keyboard } from './keyboards';
+import { Dispatcher } from './handlers/index.js';
+import { CronStart } from './cron/index.js';
+dotenv.config()
 
 const bot = new Bot(process.env.API_TOKEN);
 
-bot.command("start", (ctx) => ctx.reply("Welcome! Up and running.", { reply_markup: Keyboard.home_keyboard }));
+await Dispatcher.initialize(bot);
 
-bot.on("message", (ctx) => ctx.reply("Got another message!"));
-
+CronStart();
 bot.start();
