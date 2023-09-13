@@ -8,5 +8,5 @@ const bot = new Bot(process.env.API_TOKEN);
 
 await Dispatcher.initialize(bot);
 
-CronStart();
+// CronStart();
 bot.start();
