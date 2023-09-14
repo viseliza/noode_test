@@ -8,6 +8,6 @@ RUN npm install
 
 COPY . .
 
-RUN npm run prisma:postgres
+RUN npm run prisma:prod
 
 CMD npm start
