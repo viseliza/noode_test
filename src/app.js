@@ -5,7 +5,7 @@ import { CronStart } from './cron/index.js';
 dotenv.config()
 
 const bot = new Bot(process.env.API_TOKEN);
-bot.use
+
 await Dispatcher.initialize(bot);
 
 // CronStart();
