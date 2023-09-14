@@ -7,6 +7,6 @@ export const Commands = async (bot) => {
         '👨‍🏫 Я предназначен для упрощения работы с сайтом novsu.ru\n\n' + 
         '🧰 На данный момент я могу:\n' + 
         '📝 Просматривать существующие замены', 
-        { reply_markup: Keyboards.keyboard }
+        { reply_markup: Keyboards.main }
         )});
 }

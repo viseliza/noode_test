@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node ./src/app.js",
-    "prisma:postgres": "npx prisma migrate deploy --schema=./schemas/postgresql.prisma && npx prisma generate --schema=./schemas/postgresql.prisma"
+    "prisma:postgres": "npx prisma migrate dev --schema=./schemas/postgresql.prisma && npx prisma generate --schema=./schemas/postgresql.prisma"
   },
   "author": "",
   "license": "ISC",
