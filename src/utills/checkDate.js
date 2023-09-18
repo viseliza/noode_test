@@ -1,14 +1,13 @@
-export const CheckDate = async (date) => {
+export const CheckDate = (date) => {
     var date_time = new Date();
     var year_now  = date_time.getFullYear().toString();
-    var day_now = ("0" + date_time.getDate()).slice(-2).toString();
-    var month_now = ("0" + (date_time.getMonth() + 1)).slice(-2).toString();
+    var date_now = date_time.toLocaleDateString()
     var month_now_word = new Date().toLocaleString('ru', {       
         month: 'long'
     });
-
+    
     if (date.match(/\d\d.\d\d.\d\d\d\d/)) {
-        return date == `${day_now}.${month_now}.${year_now}` 
+        return date == `${date_now}` 
         ? true
         : false
     } else {

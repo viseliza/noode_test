@@ -9,17 +9,15 @@ export const GetURL = async (url) => {
     const table = $('.viewtablewhite');
 
     table.find('tr').each((_, row) => {
-        $(row).find('td').find('div').each(async (_, cell) => {
+        $(row).find('td').find('div').each((_, cell) => {
+            var row_a = $(cell).find("a");
             if (url == 'https://portal.novsu.ru/univer/timetable/spo/') { 
-                if ($(cell).find("a").text() == "ПТК") {
-                    result = $(cell).find("a").attr('href')
+                if (row_a.text() == "ПТК") {
+                    result = row_a.attr('href')
                 }
             } else {
-                const z = CheckDate(url, $(cell).find("a").text())
-                if (z) {
-                    console.log(await z)
-                    console.log($(cell).find("a").text())
-                    result = $(cell).find("a").attr('href')
+                if (CheckDate(row_a.text())) {
+                    result = row_a.attr('href')
                 }
             }
         });

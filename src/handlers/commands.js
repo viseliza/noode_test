@@ -1,5 +1,4 @@
 import { Keyboards } from "../keyboards/index.js";
-import { GetURL } from '../utills/index.js';
 
 export const Commands = async (bot) => {
     bot.command("start", (ctx) => {

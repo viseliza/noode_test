@@ -1,9 +1,15 @@
+import { GetURL, DownloadFile } from '../utills/index.js';
+
 export const Triggers = async (bot) => {
     bot.hears(/(выбор группы|группа)/gmiu, async (ctx) => {
         return ctx.reply('выбор группы')
     });
     
     bot.hears(/просмотр замен/gmiu, async (ctx) => {
+      var url = 'https://portal.novsu.ru/univer/timetable/spo/';
+
+        console.log(await GetURL(url))
+        DownloadFile(await GetURL(url))
         return ctx.reply('замены')
     });
 
