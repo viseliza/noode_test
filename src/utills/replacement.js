@@ -2,11 +2,14 @@ import fetch from 'node-fetch';
 import * as fs from 'fs';
 import unirest from "unirest";
 import * as cheerio from 'cheerio';
+import WordExtractor from 'word-extractor';
 
 export class Replacement {
-    
-    main() {
-        
+
+    async main() {
+        const url = "https://portal.novsu.ru/univer/timetable/spo/";
+        this.GetURL(url).then(result => this.DownloadFile(result));
+        return this.docParse();
     }
 
     async GetURL (url) {
@@ -23,16 +26,20 @@ export class Replacement {
                         result = row_a.attr('href')
                     }
                 } else {
-                    if (CheckDate(row_a.text())) {
+                    if (this.CheckDate(row_a.text())) {
                         result = row_a.attr('href')
                     }
                 }
             });
         });
-    
+
+        if (url == result) {
+            return "На сегодня замен нет ни у одной группы!"
+        }
+
         return result.match('https://portal.novsu.ru/file') 
         ? result
-        : await GetURL(result)
+        : await this.GetURL(result)
     }
         
 
@@ -57,10 +64,36 @@ export class Replacement {
     DownloadFile(url) {
         fetch(url)
         .then(res => res.buffer())
-        .then(buffer => fs.writeFileSync('zamena.doc', buffer))
+        .then(buffer => fs.writeFileSync('src/docs/zamena.doc', buffer))
     }
 
-    docParse() {
-        
+    async docParse() {
+        const extractor = new WordExtractor();
+        const extracted = await extractor.extract("src/docs/zamena.doc");
+        const body = extracted.getBody().split('\n')
+        .filter(function(el) {
+            return el != '';
+        });
+        let result = "";
+        const group = "1992"; // TODO: выборка из бд
+
+        for (let line = 5; line < body.length; line++) {
+            let _value = body[line].split('\t');
+            if (_value[0] == group) {
+                if (_value[3] == "Не будет") {
+                    result += `Группа ${_value[0]}\n№ пары ${_value[1]}\nПо расписанию ${_value[2]}\n${_value[3]}\n\n`;
+                } else if (_value[3] == "Дистанционное обучение") {
+                    result += `Группа ${_value[0]}\n№ пары ${_value[1]}\nПо расписанию ${_value[2]}\nЗаменена на ${_value[3]}\n\n`;
+                } else if (_value[3].includes("п/г")) {
+                    result += `Группа ${_value[0]}\n№ пары ${_value[1]}\nПо расписанию ${_value[2]}\n${_value[3]}\n\n`;
+                } else {
+                    result += `Группа ${_value[0]}\n№ пары ${_value[1]}\nПо расписанию ${_value[2]}\nЗаменена на ${_value[3]}\nАудитория ${_value[4]}\n\n`;
+                }
+            }
+        }
+
+        return result == '' 
+        ? "На сегодня замен нет"
+        : result
     }
 }

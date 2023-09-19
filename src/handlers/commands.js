@@ -1,7 +1,9 @@
 import { Keyboards } from "../keyboards/index.js";
 
+
 export const Commands = async (bot) => {
     bot.command("start", (ctx) => {
+        // Проверка на существование пользователя и выбор колледжа
         ctx.reply(
         `👋 Здравствуйте, ${ctx.message.chat.first_name}!\n` +
             "👨‍🏫 Я предназначен для упрощения работы с сайтом novsu.ru\n\n" +
@@ -12,8 +14,5 @@ export const Commands = async (bot) => {
     });
 
     bot.command("help", async (ctx) => {
-        var url = 'https://portal.novsu.ru/univer/timetable/spo/';
-
-        console.log(await GetURL(url))
     });
 };

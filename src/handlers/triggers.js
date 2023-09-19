@@ -1,4 +1,4 @@
-import { GetURL, DownloadFile } from '../utills/index.js';
+import { Replacement } from "../utills/index.js";
 
 export const Triggers = async (bot) => {
     bot.hears(/(выбор группы|группа)/gmiu, async (ctx) => {
@@ -6,11 +6,8 @@ export const Triggers = async (bot) => {
     });
     
     bot.hears(/просмотр замен/gmiu, async (ctx) => {
-      var url = 'https://portal.novsu.ru/univer/timetable/spo/';
-
-        console.log(await GetURL(url))
-        DownloadFile(await GetURL(url))
-        return ctx.reply('замены')
+        const replacement = new Replacement()
+        return ctx.reply(await replacement.main())
     });
 
     bot.on(':text', async (ctx) => {
