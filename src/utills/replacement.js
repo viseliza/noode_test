@@ -53,12 +53,12 @@ export class Replacement {
     static DownloadFile(url) {
         fetch(url)
         .then(res => res.buffer())
-        .then(buffer => fs.writeFileSync('src/docs/zamena.doc', buffer))
+        .then(buffer => fs.writeFileSync('src/doc_data/zamena.doc', buffer))
     }
 
     static async docParse() {
         const extractor = new WordExtractor();
-        const extracted = await extractor.extract("src/docs/zamena.doc");
+        const extracted = await extractor.extract("src/doc_data/zamena.doc");
         const body = extracted.getBody().split('\n').filter(function(el) {
             return el != '';
         });
