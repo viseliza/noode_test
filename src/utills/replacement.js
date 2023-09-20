@@ -6,17 +6,18 @@ import WordExtractor from 'word-extractor';
 
 export class Replacement {
 
-    async main() {
+    static async main() {
         const url = "https://portal.novsu.ru/univer/timetable/spo/";
-        this.GetURL(url).then(result => this.DownloadFile(result));
-        return this.docParse();
+        Replacement.DownloadFile( await Replacement.GetURL(url) );
+        return await Replacement.docParse();
     }
 
-    async GetURL (url) {
-        const response = await unirest.get(url)
-        const $ = cheerio.load(response.body);
-        var result = "";
-        const table = $('.viewtablewhite');
+    static async GetURL (url) {
+        const response = await unirest.get(url);
+        const $ = cheerio.load(response.body),
+            table = $('.viewtablewhite');
+
+        let result = "";
     
         table.find('tr').each((_, row) => {
             $(row).find('td').find('div').each((_, cell) => {
@@ -26,74 +27,61 @@ export class Replacement {
                         result = row_a.attr('href')
                     }
                 } else {
-                    if (this.CheckDate(row_a.text())) {
+                    if (Replacement.CheckDate(row_a.text())) {
                         result = row_a.attr('href')
                     }
                 }
             });
         });
-
+        
         if (url == result) {
             return "На сегодня замен нет ни у одной группы!"
         }
 
-        return result.match('https://portal.novsu.ru/file') 
-        ? result
-        : await this.GetURL(result)
+        return result.match('https://portal.novsu.ru/file') ? result : await Replacement.GetURL(result)
     }
         
 
-    CheckDate(date) {
-        var year_now  = new Date().getFullYear().toString();
-        var date_now = new Date().toLocaleDateString()
-        var month_now_word = new Date().toLocaleString('ru', {       
-            month: 'long'
-        });
+    static CheckDate(date) {
+        const now = new Date();
         
-        if (date.match(/\d\d.\d\d.\d\d\d\d/)) {
-            return date == `${date_now}` 
-            ? true
-            : false
-        } else {
-            return date.toLowerCase() == `${month_now_word} ${year_now}` 
-            ? true 
-            : false
-        }
+        return date.match(/\d\d.\d\d.\d\d\d\d/) ?
+            date === now.toLocaleDateString('ru') :
+            date.toLowerCase() === `${now.toLocaleString('ru', { month: 'long' })} ${now.getFullYear()}`;
     }
 
-    DownloadFile(url) {
+    static DownloadFile(url) {
         fetch(url)
         .then(res => res.buffer())
         .then(buffer => fs.writeFileSync('src/docs/zamena.doc', buffer))
     }
 
-    async docParse() {
+    static async docParse() {
         const extractor = new WordExtractor();
         const extracted = await extractor.extract("src/docs/zamena.doc");
-        const body = extracted.getBody().split('\n')
-        .filter(function(el) {
+        const body = extracted.getBody().split('\n').filter(function(el) {
             return el != '';
         });
+
         let result = "";
         const group = "1992"; // TODO: выборка из бд
 
         for (let line = 5; line < body.length; line++) {
             let _value = body[line].split('\t');
             if (_value[0] == group) {
-                if (_value[3] == "Не будет") {
-                    result += `Группа ${_value[0]}\n№ пары ${_value[1]}\nПо расписанию ${_value[2]}\n${_value[3]}\n\n`;
-                } else if (_value[3] == "Дистанционное обучение") {
-                    result += `Группа ${_value[0]}\n№ пары ${_value[1]}\nПо расписанию ${_value[2]}\nЗаменена на ${_value[3]}\n\n`;
+                result += `Группа ${_value[0]}\n№ пары ${_value[1]}\nПо расписанию ${_value[2]}\n`;
+                if (_value[3].toLowerCase() == "не будет") {
+                    result += `${_value[3]}\n\n`;
+                } else if (['дистанционное обучение', 'до'].includes(_value[3].toLowerCase())) {
+                    result += `Заменена на ${_value[3]}\n\n`;
                 } else if (_value[3].includes("п/г")) {
-                    result += `Группа ${_value[0]}\n№ пары ${_value[1]}\nПо расписанию ${_value[2]}\n${_value[3]}\n\n`;
+                    result += `${_value[3]}\n\n`;
                 } else {
-                    result += `Группа ${_value[0]}\n№ пары ${_value[1]}\nПо расписанию ${_value[2]}\nЗаменена на ${_value[3]}\nАудитория ${_value[4]}\n\n`;
+                    result += `Заменена на ${_value[3]}\nАудитория ${_value[4]}\n\n`;
                 }
             }
         }
 
-        return result == '' 
-        ? "На сегодня замен нет"
-        : result
+        return result == '' ? 'На сегодня замен нет' : result
     }
 }

@@ -6,8 +6,7 @@ export const Triggers = async (bot) => {
     });
     
     bot.hears(/просмотр замен/gmiu, async (ctx) => {
-        const replacement = new Replacement()
-        return ctx.reply(await replacement.main())
+        return ctx.reply(await Replacement.main())
     });
 
     bot.on(':text', async (ctx) => {
