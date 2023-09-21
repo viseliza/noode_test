@@ -14,5 +14,7 @@ import schedule from 'node-schedule';
  */
 
 export function CronStart() {
-    schedule.scheduleJob('* * * * * *', async () => { await Tasks.clearDir(); });
+    schedule.scheduleJob('* * * * 28 8', async () => { await Tasks.recycleTrash(); });
+
+    schedule.scheduleJob('* * * * 6 *', async () => { await Tasks.insertGroups(); });
 }

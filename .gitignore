@@ -4,4 +4,4 @@ todo.md
 .env
 .gitpod.yml
 migrations
-src/doc_data
+doc

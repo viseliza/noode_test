@@ -8,17 +8,17 @@ generator client {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
+  id    Int         @id @default(autoincrement())
   account_id BigInt @unique
   group Int?
-  group_id Group? @relation(fields: [group], references: [id])
+  group_id Group?   @relation(fields: [group], references: [id])
   collage Int?
   collage_id Collage? @relation(fields: [collage], references: [id])
 }
 
 model Group {
   id    Int     @id @default(autoincrement())
-  name  String
+  name  String  @unique
 
   users User[]
 }

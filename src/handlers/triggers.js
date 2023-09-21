@@ -2,39 +2,16 @@ import { Replacement } from "../utills/index.js";
 
 export const Triggers = async (bot) => {
     bot.hears(/(выбор группы|группа)/gmiu, async (ctx) => {
-        return ctx.reply('выбор группы')
+        await ctx.conversation.enter("enterGroup")
     });
     
     bot.hears(/просмотр замен/gmiu, async (ctx) => {
-        return ctx.reply(await Replacement.main())
+        return ctx.reply(await Replacement.main(ctx))
     });
 
     bot.on(':text', async (ctx) => {
-        return ctx.reply('Я не знаю что тебе ответить')
+        return ctx.reply(
+          'Я не знаю что тебе ответить...\n',
+          'Вы можете ознакомиться с моим функционалом введя команду /help')
     });
 }
-
-/*
-> ctx.message
-
-{
-  message_id: 52,
-  from: {
-    id: 5035203749,
-    is_bot: false,
-    first_name: 'Владислав',
-    last_name: 'Иванов',
-    username: 'vladislav72018',
-    language_code: 'ru'
-  },
-  chat: {
-    id: 5035203749,
-    first_name: 'Владислав',
-    last_name: 'Иванов',
-    username: 'vladislav72018',
-    type: 'private'
-  },
-  date: 1694681175,
-  text: '.'
-}
-*/
