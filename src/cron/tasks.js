@@ -5,7 +5,7 @@ import { groupExist, clear } from "../utills/index.js";
 
 export class Tasks {
     // Раз в неделю по воскресеньям
-    static async recycleTrash() {
+    static async deleteTrash() {
         const path = `src/doc/`;
         const files = fs.readdirSync( path );
 
@@ -24,7 +24,7 @@ export class Tasks {
         
         col.find( 'tr' ).each(( _, row ) => {
             $( row ).find( 'td' ).find( 'a' ).each( async ( _, cell ) => {
-                await groupExist( $( cell ).text() );
+                await groupExist( $( cell ).text(), $( cell ).attr( 'href' ) );
             })
         })   
     }

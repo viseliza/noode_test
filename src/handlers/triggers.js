@@ -1,12 +1,12 @@
 import { Replacement } from "../utills/index.js";
 
 export const Triggers = async (bot) => {
-    bot.hears(/(выбор группы|группа)/gmiu, async (ctx) => {
-        await ctx.conversation.enter("enterGroup")
+    bot.hears(/(выбор группы|группа)/gmiu, async ( ctx ) => {
+        await ctx.conversation.enter("enterGroup");
     });
     
-    bot.hears(/просмотр замен/gmiu, async (ctx) => {
-        return ctx.reply(await Replacement.main(ctx))
+    bot.hears(/просмотр замен/gmiu, async ( ctx ) => {
+        return ctx.reply( await Replacement.main( ctx ) );
     });
 
     bot.on(':text', async (ctx) => {

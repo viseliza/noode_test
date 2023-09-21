@@ -9,14 +9,14 @@ import { enterGroup } from "./utills/index.js";
 import dotenv from 'dotenv'
 dotenv.config()
 
-const bot = new Bot(process.env.API_TOKEN);
+const bot = new Bot( process.env.API_TOKEN );
 
 bot.use(session({ initial: () => ({}) }));
 bot.use(conversations());
 
-bot.use(createConversation(enterGroup));
+bot.use( createConversation( enterGroup ) );
 
-await Dispatcher.initialize(bot);
+await Dispatcher.initialize( bot );
 
 CronStart();
 bot.start();

@@ -24,7 +24,7 @@ export class Replacement {
         }
 
         if (!fs.existsSync( path )) {
-            Replacement.DownloadFile( await Replacement.GetURL( url ), path );
+            await Replacement.DownloadFile( await Replacement.GetURL( url ), path );
         }
         
         return await Replacement.docParse( group.name, path );
@@ -36,13 +36,13 @@ export class Replacement {
         const $ = cheerio.load( response.body ),
             table = $( '.viewtablewhite' );
 
-        let result = "";
+        let result = '';
     
         table.find( 'tr' ).each(( _, row ) => {
             $(row).find( 'td' ).find( 'div' ).each(( _, cell ) => {
-                let row_a = $( cell ).find( "a" );
+                let row_a = $( cell ).find( 'a' );
                 if ( url == 'https://portal.novsu.ru/univer/timetable/spo/' ) { 
-                    if ( row_a.text() == "ПТК" ) {
+                    if ( row_a.text() == 'ПТК' ) {
                         result = row_a.attr( 'href' )
                     }
                 } else {
@@ -70,23 +70,12 @@ export class Replacement {
     }
 
 
-    static DownloadFile( url, path ) {
-        fetch( url )
-        .then( res => res.buffer() )
-        .then( buffer => fs.writeFileSync( path, buffer ))
+    static async DownloadFile( url, path ) {
+        const result = fetch( url )
+        return fs.writeFileSync( path, await result.buffer() );
     }
-
-
-    static sleep(ms) {
-        return new Promise( resolve => setTimeout( resolve, ms ) );
-    }
-
 
     static async docParse( group, path ) {
-        if (!fs.existsSync( path )) {
-            await Replacement.sleep(1000);
-            return await Replacement.docParse( group, path );
-        }
         const extractor = new WordExtractor();
         const extracted = await extractor.extract( path );
         const body = extracted.getBody().split( '\n' ).filter(function( el ) {
