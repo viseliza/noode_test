@@ -12,7 +12,7 @@ export class Replacement {
     static async main( ctx ) {
         const group = await Group.findOne({
             where: { id: await User.findOne({
-                where: { account_id: ctx.message.from.id }
+                where: { account_id: ctx.from.id  }
             }).then( ( result ) => { return result.group } )}
         })
 
@@ -22,7 +22,7 @@ export class Replacement {
         if (!await Replacement.GetURL( url )) {
             return "На сегодня замен нет!"
         }
-
+        
         if (!fs.existsSync( path )) {
             await Replacement.DownloadFile( await Replacement.GetURL( url ), path );
         }
@@ -53,6 +53,7 @@ export class Replacement {
             });
         });
 
+        
         if ( url == result ) {
             return false;
         }
@@ -62,17 +63,15 @@ export class Replacement {
         
 
     static CheckDate( date ) {
-        const now = new Date();
-        
         return date.match(/\d\d.\d\d.\d\d\d\d/) ?
-        date === now.toLocaleDateString('ru') :
-        date.toLowerCase() === `${now.toLocaleString('ru', { month: 'long' })} ${now.getFullYear()}`;
+        date === new Date(Date.now()).toLocaleDateString('ru') :
+        date.toLowerCase() === `${new Date().toLocaleString('ru', { month: 'long' })} ${new Date().getFullYear()}`;
     }
 
 
     static async DownloadFile( url, path ) {
-        const result = fetch( url )
-        return fs.writeFileSync( path, await result.buffer() );
+        const result = fetch( url );
+        return fs.writeFileSync( path, await (await result).buffer() );
     }
 
     static async docParse( group, path ) {

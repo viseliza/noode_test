@@ -24,7 +24,7 @@ export class Tasks {
         
         col.find( 'tr' ).each(( _, row ) => {
             $( row ).find( 'td' ).find( 'a' ).each( async ( _, cell ) => {
-                await groupExist( $( cell ).text(), $( cell ).attr( 'href' ) );
+                await groupExist( $( cell ).text(), `https://portal.novsu.ru${$( cell ).attr( 'href' )}`);
             })
         })   
     }

@@ -1,7 +1,8 @@
 import { Keyboards } from "../keyboards/index.js";
+import { userExists } from "../utills/index.js";
 
-export const Commands = async (bot) => {
-    bot.command("start", (ctx) => {
+export const Commands = (bot) => {
+    bot.command("start", async (ctx) => {
         // Проверка на существование пользователя и выбор колледжа
         ctx.reply(
             `👋 Здравствуйте, ${ctx.message.chat.first_name}!\n` +
@@ -10,6 +11,8 @@ export const Commands = async (bot) => {
             "📝 Просматривать существующие замены",
         { reply_markup: Keyboards.main }
         );
+        
+        await userExists(bot);
     });
 
     bot.command("help", (ctx) => {

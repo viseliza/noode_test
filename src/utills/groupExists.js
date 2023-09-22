@@ -1,7 +1,7 @@
 import { Group } from '../models/index.js';
 import * as fs from 'fs';
 
-export const groupExist = async( group_name, href ) => {
+export const groupExist = async( group_name, a_href ) => {
     const group = await Group.findOne({
         where: { name: group_name }
     });
@@ -9,7 +9,7 @@ export const groupExist = async( group_name, href ) => {
     if ( !group ) {
         await Group.create({ data: { 
             name: group_name,
-            href: href
+            href: a_href
         }});
         fs.mkdir( `src/doc/${group_name}`, err => {
             if( err ) throw err;
