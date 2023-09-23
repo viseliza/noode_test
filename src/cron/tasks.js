@@ -10,7 +10,6 @@ export class Tasks {
         const files = fs.readdirSync( path );
 
         for ( let file of files ) {
-            console.log( file )
             clear( file );
         }
     }

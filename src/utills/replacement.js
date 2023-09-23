@@ -6,37 +6,37 @@ import WordExtractor from 'word-extractor';
 import { Group, User } from '../models/index.js';
 
 export class Replacement {
-
-    static date = new Date().toLocaleDateString( 'ru' );
-
-    static async main( ctx ) {
+    static async main( ctx, tomorow = 0 ) {
         const group = await Group.findOne({
             where: { id: await User.findOne({
                 where: { account_id: ctx.from.id  }
             }).then( ( result ) => { return result.group } )}
         })
-
-        let path = `src/doc/${ group.name }/${ Replacement.date }.doc`;
-        let url = "https://portal.novsu.ru/univer/timetable/spo/";
-
-        if (!await Replacement.GetURL( url )) {
-            return "На сегодня замен нет!"
-        }
+        
+        const date = new Date(Date.now() + tomorow).toLocaleDateString( 'ru' );
+        
+        const path = `src/doc/${ group.name }/${ date }.doc`;
+        
+        const url = await Replacement.GetURL( "https://portal.novsu.ru/univer/timetable/spo/", tomorow ); 
+        
+        if (!url) {
+            return tomorow == 0 ? "На сегодня замен нет!" : "На завтра замен нет!";
+        } 
         
         if (!fs.existsSync( path )) {
-            await Replacement.DownloadFile( await Replacement.GetURL( url ), path );
+            await Replacement.DownloadFile( url, path );
         }
         
         return await Replacement.docParse( group.name, path );
     }
 
 
-    static async GetURL ( url ) {
+    static async GetURL ( url, tomorow ) {
         const response = await unirest.get( url );
         const $ = cheerio.load( response.body ),
             table = $( '.viewtablewhite' );
 
-        let result = '';
+        let result = url;
     
         table.find( 'tr' ).each(( _, row ) => {
             $(row).find( 'td' ).find( 'div' ).each(( _, cell ) => {
@@ -46,26 +46,25 @@ export class Replacement {
                         result = row_a.attr( 'href' )
                     }
                 } else {
-                    if (Replacement.CheckDate( row_a.text() )) {
+                    if (Replacement.CheckDate( row_a.text(), tomorow )) {
                         result = row_a.attr( 'href' )
                     }
                 }
             });
         });
 
+        if ( url == result ) return false;
         
-        if ( url == result ) {
-            return false;
-        }
-
-        return result.match( 'https://portal.novsu.ru/file' ) ? result : await Replacement.GetURL( result )
+        return result.match( 'https://portal.novsu.ru/file' ) ? result : await Replacement.GetURL( result, tomorow )
     }
         
 
-    static CheckDate( date ) {
-        return date.match(/\d\d.\d\d.\d\d\d\d/) ?
-        date === new Date(Date.now()).toLocaleDateString('ru') :
-        date.toLowerCase() === `${new Date().toLocaleString('ru', { month: 'long' })} ${new Date().getFullYear()}`;
+    static CheckDate( date, tomorow ) {
+        if ( date.match(/\d\d.\d\d.\d\d\d\d/) ) {
+            return date == new Date(Date.now() + tomorow).toLocaleDateString('ru') ? true : false
+        } else {
+            return date.toLowerCase() === `${new Date().toLocaleString('ru', { month: 'long' })} ${new Date().getFullYear()}` ? true : false
+        }
     }
 
 
@@ -98,6 +97,6 @@ export class Replacement {
             }
         }
 
-        return result == '' ? 'На сегодня замен нет' : result
+        return result == '' ? 'Замены для выбранной группы не найдены!' : result
     }
 }
