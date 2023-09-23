@@ -7,10 +7,10 @@ export class Tasks {
     // Раз в неделю по воскресеньям
     static async deleteTrash() {
         const path = `src/doc/`;
-        const files = fs.readdirSync( path );
+        const folders = fs.readdirSync( path );
 
-        for ( let file of files ) {
-            clear( file );
+        for ( let folder of folders ) {
+            clear( folder );
         }
     }
 

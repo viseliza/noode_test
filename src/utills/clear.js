@@ -6,10 +6,10 @@ export const clear = ( group ) => {
     const files = fs.readdirSync( path );
     
     for ( let file of files ) {
-        if ( date > file.replace( '.doc' ) ) {
+        if ( parseInt( date ) > parseInt( file.replace( '.doc' ) ) ) {
             fs.unlink(`${ path }/${ file }`, err => {
                 if ( err ) throw err;
-                console.log( `Файл ${path}/${file} был успешно удален!` )
+                console.log( `Файл ${ path }/${ file } был успешно удален!` )
             });
         }
     }

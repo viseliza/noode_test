@@ -3,17 +3,15 @@ import * as fs from 'fs';
 import unirest from "unirest";
 import * as cheerio from 'cheerio';
 import WordExtractor from 'word-extractor';
-import { Group, User } from '../models/index.js';
+import { User } from '../models/index.js';
 
 export class Replacement {
     static async main( ctx, tomorow = 0 ) {
-        const group = await Group.findOne({
-            where: { id: await User.findOne({
-                where: { account_id: ctx.from.id  }
-            }).then( ( result ) => { return result.group } )}
+        const group = await User.include({
+            where: ctx.from.id
         })
         
-        const date = new Date(Date.now() + tomorow).toLocaleDateString( 'ru' );
+        const date = new Date( Date.now() + tomorow ).toLocaleDateString( 'ru' );
         
         const path = `src/doc/${ group.name }/${ date }.doc`;
         
@@ -24,7 +22,7 @@ export class Replacement {
         } 
         
         if (!fs.existsSync( path )) {
-            await Replacement.DownloadFile( url, path );
+            await Replacement.downloadFile( url, path );
         }
         
         return await Replacement.docParse( group.name, path );
@@ -68,7 +66,7 @@ export class Replacement {
     }
 
 
-    static async DownloadFile( url, path ) {
+    static async downloadFile( url, path ) {
         const result = fetch( url );
         return fs.writeFileSync( path, await (await result).buffer() );
     }

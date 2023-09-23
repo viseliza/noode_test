@@ -11,7 +11,10 @@ export const groupExist = async( group_name, a_href ) => {
             name: group_name,
             href: a_href
         }});
-        fs.mkdir( `src/doc/${group_name}`, err => {
+        fs.mkdir( `src/doc/${ group_name }`, err => {
+            if( err ) throw err;
+        });
+        fs.mkdir( `src/xlsx/${ group_name }`, err => {
             if( err ) throw err;
         });
     }

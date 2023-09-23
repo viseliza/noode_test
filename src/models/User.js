@@ -1,3 +1,4 @@
+import { Group } from './Group.js';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -29,5 +30,13 @@ export class User {
 
     static async delete({ where }) {
         return await prisma.user.delete(where);
+    }
+
+    static async include({ where }) {
+        return await Group.findOne({
+            where: { id: await User.findOne({
+                where: { account_id: where  }
+            }).then( ( result ) => { return result.group } )}
+        })
     }
 }
