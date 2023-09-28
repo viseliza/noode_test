@@ -81,6 +81,7 @@ export class Schedule {
                 break;
             }
         }
+        result += '——————————————————————\n';
         return result;
     }
 
@@ -110,7 +111,6 @@ export class Schedule {
             time == "8.30-10.10" ? result += `08.30-10.10 | ${ replacement }\n` : result += `${ time } | ${ replacement }\n`
             
         }
-
         return result;
     }
 }
