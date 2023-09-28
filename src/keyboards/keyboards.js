@@ -4,8 +4,8 @@ export class Keyboards {
     static time = "0";
 
     static main = new Keyboard()
-        .text( "👥 Выбор группы" )
-        .text( "🗓 Просмотр замен" )
+        .text( "👥 Выбор группы" ).row()
+        .text( "📝 Просмотр замен" )
         .text( "🗓 Расписание" )
         .resized();
 
@@ -15,4 +15,7 @@ export class Keyboards {
 
     static inline_tomorow = new InlineKeyboard()
     .text( "Скачать файл", "donwloadNextDay" );
+
+    static inline_full_days = new InlineKeyboard()
+    .text( "Показать на всю неделю", "fullWeak" );
 }

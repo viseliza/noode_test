@@ -16,23 +16,31 @@ export const Triggers = async ( bot ) => {
 
 
     bot.hears(/расписание/gmiu, async ( ctx ) => {
-        return ctx.reply( await Schedule.main( ctx ) )
+        return ctx.reply( await Schedule.main( ctx ), {
+            reply_markup: Keyboards.inline_full_days,
+            parse_mode: "HTML",
+        });
     });
 
 
-    bot.callbackQuery( "tomorow", async ( ctx ) => {
+    bot.callbackQuery( 'fullWeak', async ( ctx ) => {
+        ctx.reply( await Schedule.main( ctx, false ), { parse_mode: "HTML" } );
+    })
+
+
+    bot.callbackQuery( 'tomorow', async ( ctx ) => {
         ctx.reply( await Replacement.main( 
             ctx.update.callback_query,
-            86400000
+            86_400_000
         ), {  reply_markup: Keyboards.inline_tomorow });
     }) 
 
-    bot.callbackQuery( "downloadNow", async ( ctx ) => {
+    bot.callbackQuery( 'downloadNow', async ( ctx ) => {
         await sendFile( ctx );
     })
 
-    bot.callbackQuery( "donwloadNextDay", async ( ctx ) => {
-        await sendFile( ctx, 86400000 );
+    bot.callbackQuery( 'donwloadNextDay', async ( ctx ) => {
+        await sendFile( ctx, 86_400_000 );
     })
 
 

@@ -11,9 +11,11 @@ export class Replacement {
             where: ctx.from.id
         })
         
+        if (!group) return "Вы не ввели группу!\nВы можете это сделать нажав на '👥 Выбор группы'";
+
         const date = new Date( Date.now() + tomorow ).toLocaleDateString( 'ru' );
         
-        const path = `src/doc/${ group.name }/${ date }.doc`;
+        const path = `src/doc/${ date }.doc`;
         
         const url = await Replacement.GetURL( "https://portal.novsu.ru/univer/timetable/spo/", tomorow ); 
         

@@ -1,16 +1,22 @@
 import unirest from "unirest";
 import * as cheerio from 'cheerio';
 import * as fs from 'fs';
-import { groupExist, clear } from "../utills/index.js";
+import { groupExist } from "../utills/index.js";
 
 export class Tasks {
     // Раз в неделю по воскресеньям
     static async deleteTrash() {
         const path = `src/doc/`;
-        const folders = fs.readdirSync( path );
-
-        for ( let folder of folders ) {
-            clear( folder );
+        const files = fs.readdirSync( path );
+        const date = new Date().toLocaleDateString( 'ru' );
+        
+        for ( let file of files ) {
+            if ( Date.parse( date ) > Date.parse( file.replace( '.doc' ) ) ) {
+                fs.unlink(`${ path }/${ file }`, err => {
+                    if ( err ) throw err;
+                    console.log( `Файл ${ path }/${ file } был успешно удален!` )
+                });
+            }
         }
     }
 

@@ -6,7 +6,7 @@ export const sendFile = async ( ctx, time = 0 ) => {
     const group = await User.include({
         where: ctx.from.id
     })
-    const path = `src/doc/${ group.name }/${ new Date(Date.now() + time ).toLocaleDateString( 'ru' )}.doc`;
+    const path = `src/doc/${ new Date( Date.now() + time ).toLocaleDateString( 'ru' )}.doc`;
 
     if (fs.existsSync( path )) {
         await ctx.replyWithDocument( new InputFile( path ) );

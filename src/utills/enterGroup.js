@@ -9,6 +9,8 @@ export const enterGroup = async (conversation, ctx) => {
         where: { name: message.text }
     });
 
+    if (!group) return await ctx.reply("Вы ввели несуществующую группу!", { reply_markup: Keyboards.main })
+
     await User.update({
         where: { account_id: message.from.id },
         data: {
@@ -16,6 +18,5 @@ export const enterGroup = async (conversation, ctx) => {
         }}
     )
 
-    return !group ? await ctx.reply("Вы ввели несуществующую группу!", { reply_markup: Keyboards.main }) 
-    : await ctx.reply('Номер группы успешно сохранен!', { reply_markup: Keyboards.main });
+    return await ctx.reply('Номер группы успешно сохранен!', { reply_markup: Keyboards.main });
 }
